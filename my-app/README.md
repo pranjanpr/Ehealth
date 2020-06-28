@@ -1,4 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Dependencies Required 
+1.React
+2.React-mdl
+3.React-router-dom
+4.yarn instead of npm
+
 
 ## Available Scripts
 
