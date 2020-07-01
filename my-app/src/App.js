@@ -5,8 +5,11 @@ import Main from './components/main';
 import {Link} from 'react-router-dom';
 
 
+
 class App extends Component {
+   
   render(){
+    
   return (
     
 <div className="demo-big-content">
@@ -37,8 +40,10 @@ class App extends Component {
         </Navigation>
     </Drawer>
     <Content>
-    <div className="page-content"/>
+   
     <Main/>
+  
+
     </Content>
 </Layout>
 </div>
@@ -46,3 +51,11 @@ class App extends Component {
 }
 }
 export default App;
+
+
+
+
+
+
+
+
