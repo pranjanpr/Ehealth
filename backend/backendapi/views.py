@@ -9,8 +9,10 @@ from passlib.hash import pbkdf2_sha256
 
 from . serializers import patient_signup_serializer
 from . serializers import specialist_signup_serializer
+from . serializers import appointment_serializer
 from . models import patient_signup
 from . models import specialist_signup
+from . models import appointment
 
 
 
@@ -145,6 +147,44 @@ class patient_doctor_login(APIView):
 
 
         
+class appointments(APIView):
+
+    def get(self, request, email_id="", patient_or_specialist=0):
+        if(patient_or_specialist==0):
+            appointment_data_objects = appointment.objects.filter(specialist_email_id = email_id)
+            appointment_serial =  appointment_serializer(appointment_data_objects, many = True)
+            appointment_data = appointment_serial.data
+            return Response(appointment_data)
+        else:
+            appointment_data_objects = appointment.objects.filter(patient_email_id = email_id)
+            appointment_serial =  appointment_serializer(appointment_data_objects, many = True)
+            appointment_data = appointment_serial.data
+            return Response(appointment_data)
+
+    def post(self, request):
+
+        data_serial = appointment_serializer(data = request.data, many = True)
+        
+        if(data_serial.is_valid()):
+            data_appoint = data_serial.data
+            data_dict = data_appoint[0]
+
+            saver = appointment(patient_email_id = data_dict["patient_email_id"],
+                                specialist_email_id = data_dict["specialist_email_id"],
+                                date = data_dict["date"],
+                                time_start = data_dict["time_start"],
+                                time_end = data_dict["time_end"],
+                                type_of_call = data_dict["type_of_call"])
+
+            saver.save()
+            return Response({"status":"Ok"})
+
+        else:
+            return Response({"status":data_serial.errors})    
+
+
+
+
 
 
 

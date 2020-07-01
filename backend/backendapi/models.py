@@ -20,3 +20,13 @@ class specialist_signup(models.Model):
      postal_code = models.IntegerField(null=True)
      password = models.CharField(max_length=256)
 
+
+class appointment(models.Model):
+
+     patient_email_id = models.EmailField(max_length=256, null=True)
+     specialist_email_id = models.EmailField(max_length=256, null=True)
+     date = models.DateField(null=True)
+     time_start = models.TimeField(null=True)
+     time_end = models.TimeField(null=True)
+     type_of_call = models.CharField(max_length=256, null=True)
+
