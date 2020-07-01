@@ -154,7 +154,7 @@ class LandingPage extends Component {
                 </div>
                 <div className="createAccount">
                   <button type="submit">Create Account</button>
-                  <small>Already Have an Account?</small>
+                 <button style={{background: 'white', borderradius: '8px', color:'gray'}}><small>Already Have an Account? Sign in here.</small> </button>
                 </div>
               </form>
             </div>
