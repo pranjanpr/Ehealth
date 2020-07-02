@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
-import {Footer,FooterSection,FooterDropDownSection,FooterLinkList} from 'react-mdl';
+
+import {Link} from 'react-router-dom';
 import '../App.css';
+
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -21,7 +23,7 @@ const emailRegex = RegExp(
   
     return valid;
   };
-
+ 
 
 
 class LandingPage extends Component {
@@ -87,12 +89,12 @@ class LandingPage extends Component {
               value.length < 6 ? "minimum 6 characaters required" : "";
             break;
           case "confirmpassword":
-            formErrors.password =
+            formErrors.confirmpassword =
               value.length < 6 ? "minimum 6 characaters required" : "";
             break;
         case "dob":
-            formErrors.password =
-              value.length < 6 ? "minimum 6 characaters required" : "";
+            formErrors.dob =
+              value.length < 4 ? "minimum 4 characaters required" : "";
             break;
           default:
             break;
@@ -100,6 +102,9 @@ class LandingPage extends Component {
     
         this.setState({ formErrors, [name]: value }, () => console.log(this.state));
       };
+
+  
+     
     render(){
         const { formErrors } = this.state;
         return(
@@ -195,7 +200,11 @@ class LandingPage extends Component {
                 </div>
                 <div className="createAccount">
                   <button type="submit">Create Account</button>
-                 <button style={{background: 'white', borderradius: '8px', color:'gray'}}><small>Are you a specialist? Sign up here</small> </button>
+                    
+                  <Link to ="/doctorsignup"><short>
+                  Are you a specialist? Sign up here.
+                  </short></Link>  
+                
                 </div>
               </form>
             </div>

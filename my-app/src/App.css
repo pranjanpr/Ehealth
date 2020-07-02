@@ -69,11 +69,13 @@ input.error {
   display: relative;
 }
 
-.firstName {
+.firstName,
+.privatized {
   margin-right: 1%;
 }
 
-.lastName {
+.lastName,
+.hospitalname {
   margin-left: 1%;
 }
 
@@ -82,20 +84,30 @@ input.error {
 .email,
 .password,
 .confirmpassword,
-.dob {
+.dob,
+.hospitalname,
+.privatized,
+.speciality,
+.experience,
+.postalcode {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
 }
 
 .firstName,
-.lastName {
+.lastName,
+.privatized,
+.hospitalname {
   width: 49%;
 }
 
 .email,
 .password,
-.confirmpassword {
+.confirmpassword,
+.speciality,
+.experience,
+.postalcode {
   width: 100%;
 }
 
