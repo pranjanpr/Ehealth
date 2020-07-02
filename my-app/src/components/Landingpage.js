@@ -33,11 +33,14 @@ class LandingPage extends Component {
           lastName: null,
           email: null,
           password: null,
+          confirmpassword: null,
           formErrors: {
             firstName: "",
             lastName: "",
             email: "",
-            password: ""
+            password: "",
+            confirmpassword: "",
+            dob:""
           }
         };
       }
@@ -52,6 +55,8 @@ class LandingPage extends Component {
             Last Name: ${this.state.lastName}
             Email: ${this.state.email}
             Password: ${this.state.password}
+            Confirm Password: ${this.state.confirmpassword}
+            Date of Birth: ${this.state.dob}
           `);
         } else {
           console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
@@ -78,6 +83,14 @@ class LandingPage extends Component {
               : "invalid email address";
             break;
           case "password":
+            formErrors.password =
+              value.length < 6 ? "minimum 6 characaters required" : "";
+            break;
+          case "confirmpassword":
+            formErrors.password =
+              value.length < 6 ? "minimum 6 characaters required" : "";
+            break;
+        case "dob":
             formErrors.password =
               value.length < 6 ? "minimum 6 characaters required" : "";
             break;
@@ -138,6 +151,20 @@ class LandingPage extends Component {
                     <span className="errorMessage">{formErrors.email}</span>
                   )}
                 </div>
+                <div className="dob">
+                  <label htmlFor="dob">Date of Birth</label>
+                  <input
+                    className={formErrors.dob.length > 0 ? "error" : null}
+                    placeholder="DD/MM/YYYY"
+                    type="dob"
+                    name="dob"
+                    noValidate
+                    onChange={this.handleChange}
+                  />
+                  {formErrors.dob.length > 0 && (
+                    <span className="errorMessage">{formErrors.password}</span>
+                  )}
+                </div>
                 <div className="password">
                   <label htmlFor="password">Password</label>
                   <input
@@ -152,9 +179,23 @@ class LandingPage extends Component {
                     <span className="errorMessage">{formErrors.password}</span>
                   )}
                 </div>
+                <div className="confirmpassword">
+                  <label htmlFor="confirmpassword">Confirm Password</label>
+                  <input
+                    className={formErrors.confirmpassword.length > 0 ? "error" : null}
+                    placeholder="Confirm Password"
+                    type="password"
+                    name="confirmpassword"
+                    noValidate
+                    onChange={this.handleChange}
+                  />
+                  {formErrors.confirmpassword.length > 0 && (
+                    <span className="errorMessage">{formErrors.confirmpassword}</span>
+                  )}
+                </div>
                 <div className="createAccount">
                   <button type="submit">Create Account</button>
-                 <button style={{background: 'white', borderradius: '8px', color:'gray'}}><small>Already Have an Account? Sign in here.</small> </button>
+                 <button style={{background: 'white', borderradius: '8px', color:'gray'}}><small>Are you a specialist? Sign up here</small> </button>
                 </div>
               </form>
             </div>

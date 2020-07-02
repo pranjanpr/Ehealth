@@ -80,7 +80,9 @@ input.error {
 .firstName,
 .lastName,
 .email,
-.password {
+.password,
+.confirmpassword,
+.dob {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
@@ -92,7 +94,8 @@ input.error {
 }
 
 .email,
-.password {
+.password,
+.confirmpassword {
   width: 100%;
 }
 
