@@ -14,7 +14,7 @@ class App extends Component {
     
 <div className="demo-big-content">
 <Layout >
-    <Header className="header-color" title="E-HEALTH"  scroll>
+    <Header className="header-color" title="E-HEALTH" >
         <Navigation>
             <Link to ="/doctor">Doctor</Link>
             <Link to="/nursing">Nursing</Link>
@@ -40,13 +40,14 @@ class App extends Component {
         </Navigation>
     </Drawer>
     <Content>
+    <div><Main/></div>
+   </Content>
    
-    <Main/>
-  
-
-    </Content>
 </Layout>
+
 </div>
+
+ 
   );
 }
 }

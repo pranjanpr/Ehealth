@@ -6,6 +6,7 @@ import Doctor from './doctor';
 import Hospitals from './hospitals';
 import Aboutus from './aboutus';
 import Contactus from './contactus';
+import DoctorSignup from './doctorsignup';
 
 
 const Main=()=>{
@@ -16,6 +17,7 @@ const Main=()=>{
     <Route  path="/hospitals" component={Hospitals}/>
     <Route  path="/aboutus" component={Aboutus}/>
     <Route  path="/contactus" component={Contactus}/>
+    <Route path="/doctorsignup" component={DoctorSignup}/>
     </Switch>);
 }
 export default Main;
