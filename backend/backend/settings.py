@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'backendapi',
     'corsheaders',
+    'channels',
+    'channels_app.apps.ChannelsAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -123,3 +125,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Channel layer definitions
+# http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
+ 
+ASGI_APPLICATION = "channels_app.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": ['redis://localhost:6379/4']
+        }
+    },
+}

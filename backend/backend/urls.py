@@ -61,6 +61,9 @@ urlpatterns = [
     path('patient_doctor_login/', views.patient_doctor_login.as_view()),
     path('appointment/<str:email_id>/<int:patient_or_specialist>', views.appointments.as_view()),
     path('appointment/', views.appointments.as_view()),
+    #path('comment_storer_and_receiver/', views.comment.as_view()),
+    #path('comment_storer_and_receiver/<str:sender_email>/<str:receiver_email>', views.comment.as_view())
+
 
     
 ]

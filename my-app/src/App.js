@@ -16,6 +16,7 @@ class App extends Component {
 <Layout >
     <Header className="header-color" title="E-HEALTH" >
         <Navigation>
+            <Link to ="/chat">Chatbox</Link>
             <Link to ="/doctor">Doctor</Link>
             <Link to="/nursing">Nursing</Link>
             <Link to="/hospitals">Hospitals</Link>

@@ -6,13 +6,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from passlib.hash import pbkdf2_sha256
+from django.db.models import Q
 
 from . serializers import patient_signup_serializer
 from . serializers import specialist_signup_serializer
 from . serializers import appointment_serializer
+#from . serializers import comments_serializer
 from . models import patient_signup
 from . models import specialist_signup
 from . models import appointment
+#from . models import comments
 
 
 
@@ -185,7 +188,39 @@ class appointments(APIView):
 
 
 
+'''
+class comment(APIView):
 
+    def get(self, request,  sender_email="", receiver_email=""):
+        data_stored = comments.objects.filter(Q(email_sender = sender_email, email_receiver = receiver_email)|Q(email_sender = receiver_email, email_receiver = sender_email))
+        dataserialized = comments_serializer(data_stored, many = True)
+        data_dict = dataserialized.data
+        return Response(data_dict)
+
+    def post(self, request):
+
+        data_serial = comments_serializer(data = request.data, many = True)
+        
+        if(data_serial.is_valid()):
+            data_appoint = data_serial.data
+            data_dict = data_appoint[0]
+
+            saver = comments(email_sender = data_dict["email_sender"],
+                             email_receiver = data_dict["email_receiver"],
+                             comment = data_dict["comment"]
+                            )
+
+            saver.save()
+            return Response({"status":"Ok"})
+
+        else:
+            return Response({"status":data_serial.errors})    
+        
+
+#[{"email_sender":"sajal@gmail.com","email_receiver":"ss@ww.com","comment":"Hey"}]
+#[{"email_receiver":"sajal@gmail.com","email_sender":"ss@ww.com","comment":"Am fine"}]
+
+'''
 
 
 # Create your views here.

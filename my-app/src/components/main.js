@@ -7,11 +7,13 @@ import Hospitals from './hospitals';
 import Aboutus from './aboutus';
 import Contactus from './contactus';
 import DoctorSignup from './doctorsignup';
+import Chatbox from './chatbox';
 
 
 const Main=()=>{
    return ( <Switch>
     <Route exact path="/" component={LandingPage}/>
+    <Route  path="/chat" component={Chatbox}/>
     <Route  path="/nursing" component={Nursing}/>
     <Route  path="/doctor" component={Doctor}/>
     <Route  path="/hospitals" component={Hospitals}/>
