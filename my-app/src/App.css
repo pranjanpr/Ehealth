@@ -13,6 +13,9 @@ background: linear-gradient(to right, #F37335, #FDC830); /* W3C, IE 10+/ Edge, F
   align-items: center;
   
 }
+.header-color1{
+  background:#504832;
+}
 
 .form-wrapper {
   width: 400px;
@@ -69,13 +72,13 @@ input.error {
   display: relative;
 }
 
-.firstName,
-.privatized {
+.firstName
+ {
   margin-right: 1%;
 }
 
-.lastName,
-.hospitalname {
+.lastName
+ {
   margin-left: 1%;
 }
 
@@ -85,7 +88,7 @@ input.error {
 .password,
 .confirmpassword,
 .dob,
-.hospitalname,
+
 .privatized,
 .speciality,
 .experience,
@@ -96,9 +99,8 @@ input.error {
 }
 
 .firstName,
-.lastName,
-.privatized,
-.hospitalname {
+.lastName
+ {
   width: 49%;
 }
 
@@ -107,7 +109,8 @@ input.error {
 .confirmpassword,
 .speciality,
 .experience,
-.postalcode {
+.postalcode,
+.privatized {
   width: 100%;
 }
 

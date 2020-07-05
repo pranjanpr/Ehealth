@@ -23,7 +23,7 @@ const emailRegex = RegExp(
   
     return valid;
   };
-
+ 
 const headers = new Headers({
     Accept: "application/json",
     "Content-Type": "application/json"
@@ -51,8 +51,7 @@ class LandingPage extends Component {
         };
       }
     
-
-      testBackend = async () => {
+    testBackend = async () => {
 
         var user = {
           email: this.state.email,
@@ -84,7 +83,6 @@ class LandingPage extends Component {
             Last Name: ${this.state.lastName}
             Email: ${this.state.email}
             Password: ${this.state.password}
-            Confirm Password: ${this.state.confirmpassword}
             Date of Birth: ${this.state.dob}
           `);
           this.testBackend()
@@ -118,7 +116,7 @@ class LandingPage extends Component {
             break;
           case "confirmpassword":
             formErrors.confirmpassword =
-              value.length < 6 ? "minimum 6 characaters required" : "";
+              this.state.password!==value?"Entered value dosen't match the original Password":"";
             break;
         case "dob":
             formErrors.dob =

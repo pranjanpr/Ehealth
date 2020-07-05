@@ -26,6 +26,7 @@ const headers = new Headers({
     "Content-Type": "application/json"
 });
 
+
 class DoctorSignup extends Component{
     
         constructor(props) {
@@ -39,10 +40,10 @@ class DoctorSignup extends Component{
               confirmpassword: null,
               dob:null,
               postalcode:null,
-              hospitalname:null,
+              
               privatized:null,
               speciality:null,
-
+            
               formErrors: {
                 firstName: "",
                 lastName: "",
@@ -50,11 +51,12 @@ class DoctorSignup extends Component{
                 speciality:"",
                 experience:"",
                 privatized:"",
-                hospitalname:"",
+                cap:"",
                 password: "",
-                confirmpassword: "",
+                confirmpassword:"",
                 dob:"",
                 postalcode:"",
+                
               }
             };
           }
@@ -100,7 +102,7 @@ class DoctorSignup extends Component{
                 Last Name: ${this.state.lastName}
                 Email: ${this.state.email}
                 Password: ${this.state.password}
-                Confirm Password: ${this.state.confirmpassword}
+                
                 Date of Birth: ${this.state.dob}
                 Postal Code:${this.state.postalcode}
                 Speciality:${this.state.speciality}
@@ -114,7 +116,7 @@ class DoctorSignup extends Component{
               console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
             }
           };
-        
+           
           handleChange = e => {
             e.preventDefault();
             const { name, value } = e.target;
@@ -146,13 +148,10 @@ class DoctorSignup extends Component{
                     formErrors.privatized =
                       value.length < 3 ? "minimum 3 characaters required" : "";
                     break;
-              case "hospitalname":
-                formErrors.hospitalname =
-                  value.length < 3 ? "minimum 3 characaters required" : "";
-                break;
+              
                 case "postalcode":
                 formErrors.postalcode =
-                  value.length < 3 ? "minimum 6 characaters required" : "";
+                  value.length < 3 ? "minimum 3 characaters required" : "";
                 break;
               case "password":
                 formErrors.password =
@@ -160,11 +159,12 @@ class DoctorSignup extends Component{
                 break;
               case "confirmpassword":
                 formErrors.confirmpassword =
-                  value.length < 6 ? "minimum 6 characaters required" : "";
+                  this.state.password !== value ? "Entered value dosen't match the original Password" : "";
                 break;
+             
             case "dob":
                 formErrors.dob =
-                  value.length < 4 ? "minimum 4 characaters required" : "";
+                  value.length < 1 ? "minimum 1 characaters required" : "";
                 break;
               default:
                 break;
@@ -252,10 +252,10 @@ class DoctorSignup extends Component{
                 )}
               </div>
               <div className="privatized">
-                  <label htmlFor="privatized">Privatized Clinic</label>
+                  <label htmlFor="privatized">Privatized Clinic \ Hospital Name</label>
                   <input
                     className={formErrors.privatized.length > 0 ? "error" : null}
-                    placeholder="Clinic Name"
+                    placeholder="Clinic Name \ Hospital Name"
                     type="text"
                     name="privatized"
                     noValidate
@@ -265,20 +265,7 @@ class DoctorSignup extends Component{
                     <span className="errorMessage">{formErrors.privatized}</span>
                   )}
                 </div>
-                <div className="hospitalname">
-                  <label htmlFor="hospitalname">/ Hospital Name</label>
-                  <input
-                    className={formErrors.hospitalname.length > 0 ? "error" : null}
-                    placeholder="Hospital Name"
-                    type="text"
-                    name="hospitalname"
-                    noValidate
-                    onChange={this.handleChange}
-                  />
-                  {formErrors.lastName.length > 0 && (
-                    <span className="errorMessage">{formErrors.hospitalname}</span>
-                  )}
-                </div>
+               
                 <div className="dob">
                   <label htmlFor="dob">Date of Birth</label>
                   <input
@@ -298,7 +285,7 @@ class DoctorSignup extends Component{
                   <input
                     className={formErrors.postalcode.length > 0 ? "error" : null}
                     placeholder="6 Digits"
-                    type="password"
+                    type="postalcode"
                     name="postalcode"
                     noValidate
                     onChange={this.handleChange}
