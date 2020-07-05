@@ -57,7 +57,7 @@ class LandingPage extends Component {
             Last Name: ${this.state.lastName}
             Email: ${this.state.email}
             Password: ${this.state.password}
-            Confirm Password: ${this.state.confirmpassword}
+            
             Date of Birth: ${this.state.dob}
           `);
         } else {
@@ -90,7 +90,7 @@ class LandingPage extends Component {
             break;
           case "confirmpassword":
             formErrors.confirmpassword =
-              value.length < 6 ? "minimum 6 characaters required" : "";
+              this.state.password!==value?"Entered value dosen't match the original Password":"";
             break;
         case "dob":
             formErrors.dob =
