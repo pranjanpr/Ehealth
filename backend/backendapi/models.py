@@ -1,4 +1,8 @@
 from django.db import models
+import uuid
+from django.core.exceptions import ValidationError
+from django.db.models import Q
+
 
 # Create your models here.
 
@@ -29,4 +33,52 @@ class appointment(models.Model):
      time_start = models.TimeField(null=True)
      time_end = models.TimeField(null=True)
      type_of_call = models.CharField(max_length=256, null=True)
+
+'''
+class comments(models.Model):
+
+     email_sender = models.EmailField(max_length=256, null=True)
+     email_receiver = models.EmailField(max_length=256, null=True)
+     comment = models.TextField(null=True)
+'''     
+
+
+
+
+def validate_message_content(content):
+    if content is None or content == "" or content.isspace():
+        raise ValidationError(
+            'Content is empty/invalid',
+            code='invalid',
+            params={'content': content},
+        )
+
+
+class Message(models.Model):
+
+    id = models.UUIDField(
+        primary_key=True,
+        null=False,
+        default=uuid.uuid4,
+        editable=False
+    )
+    author = models.CharField(
+        blank=False,
+        null=False,
+        max_length = 256
+    )
+
+    listener = models.CharField(
+        blank=False,
+        null=True,
+        max_length = 256
+    )
+    
+    content = models.TextField(validators=[validate_message_content])
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def last_50_messages(self, name1, name2):
+        return Message.objects.order_by('-created_at').filter(Q(author = name1, listener = name2)|Q(author = name2, listener = name1))[:50]
+
+
 
