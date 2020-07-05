@@ -5,6 +5,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 3.React-router-dom
 4.yarn instead of npm
 5. React-router
+6.@material-ui/core
+7.@material-ui/Icons
 
 
 ## Available Scripts
