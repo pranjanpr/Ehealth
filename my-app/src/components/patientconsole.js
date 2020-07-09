@@ -160,9 +160,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Dashboard({patientinfo}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -186,7 +187,7 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Hello {PatientData[0].firstName}
+            Hello {patientinfo[0].name}
           </Typography>
           
           
@@ -254,9 +255,9 @@ export default function Dashboard() {
                 <Appointments />
               </Paper>
             </Grid>
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={5}>
               <Paper className={fixedHeightPaper}>
-                <Medical/>
+                <Medical info_of_patient = {patientinfo}/>
               </Paper>
             </Grid>
           </Grid>

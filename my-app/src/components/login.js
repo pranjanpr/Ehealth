@@ -39,6 +39,7 @@ class Login extends Component{
           password: null,
           isAuth: false,
           is_patient: true,
+          patient_information: "52",
           formErrors: {
             
             email: "",
@@ -83,7 +84,10 @@ class Login extends Component{
               )
               .then(res => res.json())
               .then(res => {
-                  if(res.status === "Ok") this.setState({isAuth: true})
+                  if(res.status === "Ok") {
+                    this.setState({isAuth: true, patient_information: res.details})
+                    
+                  }
                   if(res.is_it_patient == 0) this.setState({is_patient: false})
               })
               .catch(error => console.error(error));
@@ -108,7 +112,7 @@ class Login extends Component{
         if(this.state.isAuth) {
           if(this.state.is_patient){
            return (
-              <Patientpage></Patientpage>
+              <Patientpage patientinfo = {this.state.patient_information}/>
            )
           }
            else{

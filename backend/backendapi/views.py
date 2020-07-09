@@ -11,10 +11,12 @@ from django.db.models import Q
 from . serializers import patient_signup_serializer
 from . serializers import specialist_signup_serializer
 from . serializers import appointment_serializer
+from . serializers import medical_record_serializer
 #from . serializers import comments_serializer
 from . models import patient_signup
 from . models import specialist_signup
 from . models import appointment
+from . models import Document
 #from . models import comments
 
 
@@ -187,6 +189,30 @@ class appointments(APIView):
 
 
 
+
+class uploads(APIView):
+
+    def get(self, request, email_user="", title_file=""):
+         data_stored = Document.objects.filter(email = email_user).filter(title = title_file)
+         response = HttpResponse(data_stored[0].doc_file, content_type='application/.pdf')
+         response['Content-Disposition'] = 'inline;'
+         return response
+
+    def post(self, request):
+        print(request.FILES['myFile'])
+        print(request.data["for_patient"])
+        newdoc = Document(doc_file=request.FILES.get('myFile'), title=request.FILES['myFile'], email=request.data["for_patient"])
+        newdoc.save()
+
+        return Response({"status":str(request.FILES['myFile'])})
+
+class get_med_records(APIView):
+
+    def get(self, request, email_id=""):
+        data_stored = Document.objects.filter(email = email_id)
+        data_serial = medical_record_serializer(data_stored, many = True)
+        data_sto = data_serial.data
+        return Response({"status":data_sto})
 
 '''
 class comment(APIView):

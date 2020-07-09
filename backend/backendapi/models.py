@@ -43,6 +43,18 @@ class comments(models.Model):
 '''     
 
 
+class Document(models.Model):
+    doc_file = models.FileField(upload_to='app/img')
+    title = models.CharField(null = True, max_length = 256)
+    email = models.EmailField(max_length=254, null = True)
+
+    class Meta:
+        unique_together = (('title', 'email'))
+
+
+
+
+
 
 
 def validate_message_content(content):
