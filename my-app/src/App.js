@@ -5,6 +5,7 @@ import Main from './components/main';
 import {Link} from 'react-router-dom';
 import HomePage from './components/homepage';
 import Dashboard from './components/patientconsole';
+import Homepage from './components/homepage';
 
 
 class App extends Component {
@@ -20,8 +21,7 @@ class App extends Component {
             <Link to ="/doctor">Doctor</Link>
             <Link to="/nursing">Nursing</Link>
             <Link to="/hospitals">Hospitals</Link>
-            <Link to="/aboutus">About us</Link>
-            <Link to="/contactus">Contact us</Link>
+
             <Link to="/login">Login</Link>
             <Link to="/Landingpage">Sign Up</Link>
         </Navigation>
