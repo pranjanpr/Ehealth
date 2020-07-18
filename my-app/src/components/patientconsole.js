@@ -29,6 +29,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles';
 import Medical from './test/Medical';
+import { Redirect } from 'react-router-dom'
 
 function Copyright() {
   return (
@@ -160,9 +161,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Dashboard({patientinfo=""}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -171,6 +173,8 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+if(patientinfo != "")
+{
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -186,11 +190,11 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Hello {PatientData[0].firstName}
+            Hello {patientinfo[0].name}
           </Typography>
           
           
-          <Lk to="login" color="white"> <Button variant="contained" color="primary">Logout
+          <Lk to="/" color="white"> <Button variant="contained" color="primary">Logout
           </Button></Lk>
           
           <IconButton color="inherit">
@@ -254,9 +258,9 @@ export default function Dashboard() {
                 <Appointments />
               </Paper>
             </Grid>
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={5}>
               <Paper className={fixedHeightPaper}>
-                <Medical/>
+                <Medical info_of_patient = {patientinfo}/>
               </Paper>
             </Grid>
           </Grid>
@@ -267,4 +271,10 @@ export default function Dashboard() {
       </main>
     </div>
   );
+}
+
+else{
+  return <Redirect to="/"/>
+}
+
 }

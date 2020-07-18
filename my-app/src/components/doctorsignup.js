@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { Redirect } from 'react-router-dom'
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -21,6 +21,12 @@ const emailRegex = RegExp(
     return valid;
   };
 
+const headers = new Headers({
+    Accept: "application/json",
+    "Content-Type": "application/json"
+});
+
+
 class DoctorSignup extends Component{
     
         constructor(props) {
@@ -39,6 +45,7 @@ class DoctorSignup extends Component{
               speciality:null,
             
               formErrors: {
+                is_Auth: false,
                 firstName: "",
                 lastName: "",
                 email: "",
@@ -53,6 +60,44 @@ class DoctorSignup extends Component{
                 
               }
             };
+          }
+
+          testBackend = async () => {
+
+            var place_of_practices = ""
+
+            if(this.state.hospitalname!="")
+              place_of_practices = this.state.hospitalname
+            else
+              place_of_practices = this.state.privatized  
+
+            var user = {
+              email: this.state.email,
+              name: this.state.firstName + " " + this.state.lastName,
+              speciality: this.state.speciality,
+              experience: this.state.experience,
+              place_of_practice: place_of_practices,
+              postal_code: this.state.postalcode,
+              password: this.state.password    
+              };
+            var users = [user]
+    
+            const test = await fetch("http://localhost:8000/specialist_signup/", {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify(users),
+              cache: "default"
+            });
+            const testJson = await test.json();
+            if(testJson)
+              console.log(testJson.status)
+
+            if(testJson.status == "Ok"){
+              alert("Ok");
+              this.setState({is_Auth:true});
+              }
+            else
+              alert(((testJson.status[0]).email)[0])    
           }
         
           handleSubmit = e => {
@@ -74,8 +119,10 @@ class DoctorSignup extends Component{
 
 
               `);
+              this.testBackend()
             } else {
               console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+              alert("Please fulfill all the criteria of each field");
             }
           };
            
@@ -113,7 +160,7 @@ class DoctorSignup extends Component{
               
                 case "postalcode":
                 formErrors.postalcode =
-                  value.length < 3 ? "minimum 3 characaters required" : "";
+                  value.length !== 6 ? "exact 6 number required" : "";
                 break;
               case "password":
                 formErrors.password =
@@ -136,9 +183,8 @@ class DoctorSignup extends Component{
           };
           render(){
             const { formErrors } = this.state;
+            if(!this.state.is_Auth){
             return(
-    
-       
             <div className="wrapper">
             <div className="form-wrapper">
               <h1>Specialist Sign Up</h1>
@@ -195,21 +241,21 @@ class DoctorSignup extends Component{
                     noValidate
                     onChange={this.handleChange}
                   />
-                  {formErrors.email.length > 0 && (
+                  {formErrors.speciality.length > 0 && (
                     <span className="errorMessage">{formErrors.speciality}</span>
                   )}
                 </div>
                 <div className="experience">
                 <label htmlFor="experience">Experience</label>
                 <input
-                  className={formErrors.speciality.length > 0 ? "error" : null}
+                  className={formErrors.experience.length > 0 ? "error" : null}
                   placeholder="Years"
                   type="Number"
                   name="experience"
                   noValidate
                   onChange={this.handleChange}
                 />
-                {formErrors.email.length > 0 && (
+                {formErrors.experience.length > 0 && (
                   <span className="errorMessage">{formErrors.experience}</span>
                 )}
               </div>
@@ -223,7 +269,7 @@ class DoctorSignup extends Component{
                     noValidate
                     onChange={this.handleChange}
                   />
-                  {formErrors.firstName.length > 0 && (
+                  {formErrors.privatized.length > 0 && (
                     <span className="errorMessage">{formErrors.privatized}</span>
                   )}
                 </div>
@@ -233,13 +279,13 @@ class DoctorSignup extends Component{
                   <input
                     className={formErrors.dob.length > 0 ? "error" : null}
                     placeholder="DD/MM/YYYY"
-                    type="dob"
+                    type="date"
                     name="dob"
                     noValidate
                     onChange={this.handleChange}
                   />
                   {formErrors.dob.length > 0 && (
-                    <span className="errorMessage">{formErrors.password}</span>
+                    <span className="errorMessage">{formErrors.dob}</span>
                   )}
                 </div>
                 <div className="postalcode">
@@ -252,7 +298,7 @@ class DoctorSignup extends Component{
                     noValidate
                     onChange={this.handleChange}
                   />
-                  {formErrors.password.length > 0 && (
+                  {formErrors.postalcode.length > 0 && (
                     <span className="errorMessage">{formErrors.postalcode}</span>
                   )}
                 </div>
@@ -296,6 +342,12 @@ class DoctorSignup extends Component{
         
         )
     }
+    else{
+      return <Redirect to="/"/>
+    }
+  }
+  
 }
+
 
 export default DoctorSignup;

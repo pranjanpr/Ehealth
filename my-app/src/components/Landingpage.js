@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import { Redirect } from 'react-router-dom'
 
 import {Link} from 'react-router-dom';
 import '../App.css';
@@ -24,6 +25,11 @@ const emailRegex = RegExp(
     return valid;
   };
  
+  const headers = new Headers({
+    Accept: "application/json",
+    "Content-Type": "application/json"
+});
+  
 
 
 class LandingPage extends Component {
@@ -31,6 +37,7 @@ class LandingPage extends Component {
         super(props);
     
         this.state = {
+          is_Auth: false,
           firstName: null,
           lastName: null,
           email: null,
@@ -47,6 +54,33 @@ class LandingPage extends Component {
         };
       }
     
+      testBackend = async () => {
+
+        var user = {
+          email: this.state.email,
+          name: this.state.firstName + " " + this.state.lastName,
+          date: this.state.dob,
+          password: this.state.password     
+          };
+        var users = [user]
+
+        const test = await fetch("http://localhost:8000/patient_signup/", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(users),
+          cache: "default"
+        });
+        const testJson = await test.json();
+        if(testJson)
+          console.log(testJson.status)
+        if(testJson.status == "Ok"){
+          alert("Ok");
+          this.setState({is_Auth:true});
+        }
+        else
+          alert(((testJson.status[0]).email)[0])  
+      }
+
       handleSubmit = e => {
         e.preventDefault();
     
@@ -60,8 +94,12 @@ class LandingPage extends Component {
             
             Date of Birth: ${this.state.dob}
           `);
+          (this.testBackend());
+          
+        
         } else {
           console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+          alert("Please fulfill all the criteria of each field")
         }
       };
     
@@ -107,9 +145,8 @@ class LandingPage extends Component {
      
     render(){
         const { formErrors } = this.state;
+        if(!this.state.is_Auth){
         return(
-        
-    
           <div className="wrapper">
             <div className="form-wrapper">
               <h1>Create Account</h1>
@@ -161,7 +198,7 @@ class LandingPage extends Component {
                   <input
                     className={formErrors.dob.length > 0 ? "error" : null}
                     placeholder="DD/MM/YYYY"
-                    type="dob"
+                    type="date"
                     name="dob"
                     noValidate
                     onChange={this.handleChange}
@@ -212,6 +249,14 @@ class LandingPage extends Component {
             
         )
     }
+
+    else{
+      return <Redirect to="/"/>
+    }
+
+  }
+
+ 
 }
 
 export default LandingPage;

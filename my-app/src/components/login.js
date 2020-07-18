@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import '../App.css';
-
+import Patientpage from './patientconsole'
+import Doctorpage from './doctorconsole'
 
 const emailRegex = RegExp(
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -23,6 +24,11 @@ const emailRegex = RegExp(
     return valid;
   };
 
+const headers = new Headers({
+    Accept: "application/json",
+    "Content-Type": "application/json"
+});  
+
 class Login extends Component{
     constructor(props) {
         super(props);
@@ -31,7 +37,9 @@ class Login extends Component{
        
           email: null,
           password: null,
-          
+          isAuth: false,
+          is_patient: true,
+          patient_information: "52",
           formErrors: {
             
             email: "",
@@ -41,7 +49,8 @@ class Login extends Component{
           }
         };
       }
-    
+
+      
       handleSubmit = e => {
         e.preventDefault();
     
@@ -53,6 +62,41 @@ class Login extends Component{
             Password: ${this.state.password}
         
           `);
+          var place_of_practices = ""
+
+          if(this.state.hospitalname!="")
+            place_of_practices = this.state.hospitalname
+          else
+            place_of_practices = this.state.privatized  
+  
+          var user = {
+            email: this.state.email,
+            password: this.state.password    
+            };
+          var users = [user]
+  
+          fetch('http://localhost:8000/patient_doctor_login/',
+                  {
+                      method: 'POST',
+                      body: JSON.stringify(users),
+                      headers: headers
+                  }
+              )
+              .then(res => res.json())
+              .then(res => {
+                  if(res.status === "Ok") {
+                    this.setState({isAuth: true, patient_information: res.details});
+                    if(res.is_it_patient == 0) 
+                    this.setState({is_patient: false});
+                    
+                  }
+                  
+                  else{
+                    alert(res.status);
+                  }
+              })
+              .catch(error => console.error(error));
+
         } else {
           console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
         }
@@ -69,6 +113,20 @@ class Login extends Component{
       };
     render(){
         const { formErrors } = this.state;
+
+        if(this.state.isAuth) {
+          if(this.state.is_patient){
+           return (
+              <Patientpage patientinfo = {this.state.patient_information}/>
+           )
+          }
+           else{
+            return (
+              <Doctorpage doctorinfo = {this.state.patient_information}/>
+           )
+           }
+        }
+
         return(
             <div className="wrapper">
             <div className="form-wrapper">
