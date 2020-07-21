@@ -1,9 +1,9 @@
 import { HashRouter } from "react-router-dom"
 
 const DoctorData=[{
-    firstName:"doctor",
+    firstName:"Dr. Manish",
     lastName:"yadav",
-    email:"mymail@gmail.com",
+    email:"ssss@gg.com",
     specialization:"brain",
     dob:"23/04/3683",
     privatized:"tcg hospital",
@@ -12,7 +12,7 @@ const DoctorData=[{
     postalCode:895755,
     rate:"300Rs/Hr",
 },{
-    firstName:"doctor",
+    firstName:"Dr. Manish",
     lastName:"yadav",
     email:"mymail@gmail.com",
     specialization:"brain",
@@ -23,7 +23,7 @@ const DoctorData=[{
     postalCode:895755,
     rate:"400Rs/Hr",
 },{
-    firstName:"doctor",
+    firstName:"Dr. Manish",
     lastName:"yadav",
     email:"mymail@gmail.com",
     specialization:"brain",
@@ -34,7 +34,7 @@ const DoctorData=[{
     postalCode:895755,
     rate:"250Rs/Hr",
 },{
-    firstName:"doctor",
+    firstName:"Dr. Manish",
     lastName:"yadav",
     email:"mymail@gmail.com",
     specialization:"brain",

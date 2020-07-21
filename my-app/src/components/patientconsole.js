@@ -30,6 +30,10 @@ import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles';
 import Medical from './test/Medical';
 import { Redirect } from 'react-router-dom'
+import DoctorResults from './doctor'
+import {Modal} from 'react-bootstrap'
+import Video_Audio_window from '../Video_Audio_call'
+import {useEffectOnce} from 'react-use'
 
 function Copyright() {
   return (
@@ -164,6 +168,29 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard({patientinfo=""}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [searchresult, showSearchResult] = React.useState(false);
+  const [is_user_calling, set_is_user_calling] = React.useState(false);
+  const [is_confirm, set_is_confirm] = React.useState(false)  
+  const [array_of_details, set_array_of_details] = React.useState([]);
+
+  const [patient_id, set_patient_id] = React.useState(0);
+  const [specialist_id, set_specialist_id] = React.useState(0);
+
+  const [QB, setQB] = React.useState(require('../../node_modules/quickblox/quickblox'));
+
+  
+
+  useEffectOnce(() => {
+      var CREDENTIALS = {
+      'appId': "84745",
+      'authKey': 'LdXtzcfrYbBjeAe',
+      'authSecret': 'dBGXnpyZWmqzTWf'
+      };
+  
+      QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
+      sessioncreater();
+  }, [QB]);  
+
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -173,10 +200,120 @@ export default function Dashboard({patientinfo=""}) {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const keyPress = (e) => {
+    //When user presses enter button
+    if(e.keyCode == 13){
+       console.log('value', e.target.value);
+    //e.target.value is the value stored in the text field which will be sent to backend for processing 
+       showSearchResult(true);
+    }
+ }
+
+const handleClose = () => showSearchResult(false);
+
+
+
+
+
+
+
+const handle_User_Calling = async(date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call) => {
+
+  console.log(date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call);
+  set_array_of_details([date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call]);
+  
+  console.log(array_of_details);
+  
+  console.log(get_users(specialist_email_id, 0));
+  console.log(get_users(patient_email_id, 1));
+  
+  console.log(patient_id);
+  console.log(specialist_id);
+
+  set_is_confirm(true);
+
+ 
+}
+
+const handleCloseConfirmAndAccept = () => {
+  set_is_confirm(false);
+  set_is_user_calling(true);
+  //destroyus();
+}
+
+const handleCloseConfirm = () => {
+  set_is_confirm(false);
+  set_is_user_calling(false);
+  sessioncreater();
+}
+
+
+
+
+
+const sessioncreater = () => {
+  var params = {login: 'sajal',password: 'quickblox'};  
+
+  QB.createSession(params, function(err, result) {
+  if(result)
+  {
+  console.log("session created");
+  console.log(result);
+  }
+  else
+  {
+  console.log("error thrown");
+  console.error(err);// callback function
+  }
+});
+}
+
+
+
+
+
+
+const get_users = async(email, is_who) => {
+  
+  var searchParams = {email: email};
+  
+  QB.users.get(searchParams, function(error, user){
+    if(user){
+      console.log("users found");
+      console.log(user);
+      if(is_who)
+      set_patient_id(user.id);
+      else
+      set_specialist_id(user.id);
+      return user;
+      
+    }
+    else{
+      console.log("error in finding users");
+      console.error(error);
+    }
+  
+});
+  return "sajal"
+}  
+
 if(patientinfo != "")
 {
   return (
-    <div className={classes.root}>
+    <div>
+      {is_user_calling ?  
+      <Modal show={is_user_calling}>
+        <Modal.Header closeButton>
+          <Modal.Title>Communication with Doctor</Modal.Title>
+        </Modal.Header>
+        <Modal.Body><Video_Audio_window detail_array = {array_of_details} QB = {QB} patient_id = {patient_id} specialist_id = {specialist_id} endcallfunc = {handleCloseConfirm}/></Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+      </Modal>
+    
+:
+<div>
+<div className={classes.root}>
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
@@ -241,6 +378,7 @@ if(patientinfo != "")
                   input: classes.inputInput,
                 }}
                 inputProps={{ 'aria-label': 'search' }}
+                onKeyDown={keyPress}
               />
             </div>
             
@@ -255,7 +393,7 @@ if(patientinfo != "")
             {/* Recent Orders */}
             <Grid item xs={12} md={6} lg={5}>
               <Paper className={fixedHeightPaper}>
-                <Appointments />
+                <Appointments info_of_patient = {patientinfo} is_patient = {1} handle_User_Calling = {handle_User_Calling}/>
               </Paper>
             </Grid>
             <Grid item xs={12} md={6} lg={5}>
@@ -269,9 +407,43 @@ if(patientinfo != "")
           </Box>
         </Container>
       </main>
+      <Modal show={searchresult} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Search Results</Modal.Title>
+        </Modal.Header>
+        <Modal.Body><DoctorResults patient_email = {patientinfo[0].email} closingsearch = {handleClose}/></Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={is_confirm} onHide={handleCloseConfirm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Kindly provide your confirmation for calling the Doctor</Modal.Body>
+        <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseConfirmAndAccept}>
+            Confirm
+          </Button>
+          <Button variant="secondary" onClick={handleCloseConfirm}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
-  );
+  </div>
+  
 }
+</div>
+);  
+  
+    
+}
+  
+  
+
 
 else{
   return <Redirect to="/"/>

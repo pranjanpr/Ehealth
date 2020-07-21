@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -7,19 +7,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
+import {useEffectOnce} from 'react-use'
 
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
 
-const rows = [
-  createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-  createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-  createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-];
+
+
 
 function preventDefault(event) {
   event.preventDefault();
@@ -31,29 +23,78 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Appointments() {
+const headers = new Headers({
+  Accept: "application/json",
+  "Content-Type": "application/json"
+});
+
+export default function Appointments({info_of_patient, is_patient, handle_User_Calling}) {
   const classes = useStyles();
+  const [fetched, setFetched] = useState(false)
+  const [appoints, setAppoints] = useState([])
+  
+
+
+
+
+
+  useEffectOnce(() => {
+    if(fetched === false)
+      getrecords();
+  }, [fetched]);
+
+
+
+
+
+
+  const getrecords = async () => {
+    let url = "";
+    if(is_patient == 1)
+    url = "http://localhost:8000/appointment/" + info_of_patient[0].email + "/1"
+
+    else
+    url = "http://localhost:8000/appointment/" + info_of_patient[0].email + "/0"
+
+    const test =  await fetch(url, {
+      method: "GET",
+      headers: headers,
+      cache: "default"
+    })
+    const testJson = await test.json();
+    console.log(testJson);
+    setAppoints(testJson);
+    setFetched(true);  
+  }
+
+
+
+
   return (
     <React.Fragment>
+      {fetched &&
+      <div>
       <Title>Appointments</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            {is_patient ?
+            <TableCell>Specialist_Email</TableCell> : <TableCell>Patient_Email</TableCell>}
+            <TableCell>Start Time</TableCell>
+            <TableCell>End Time</TableCell>
+            <TableCell align="right">Type of Call</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {appoints.map((row, index) => (
+            <TableRow key={index} onClick = {()=>handle_User_Calling(row.date, row.specialist_email_id, row.patient_email_id, row.time_start, row.time_end, row.type_of_call)}>
               <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
+              {is_patient ?
+              <TableCell>{row.specialist_email_id}</TableCell> : <TableCell>{row.patient_email_id}</TableCell>}
+              <TableCell>{row.time_start}</TableCell>
+              <TableCell>{row.time_end}</TableCell>
+              <TableCell align="right">{row.type_of_call}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -63,6 +104,8 @@ export default function Appointments() {
           See more Appointments
         </Link>
       </div>
+    </div>
+}
     </React.Fragment>
   );
 }

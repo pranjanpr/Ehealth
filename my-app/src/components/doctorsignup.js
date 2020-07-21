@@ -33,6 +33,8 @@ class DoctorSignup extends Component{
             super(props);
         
             this.state = {
+              QB : require('../../node_modules/quickblox/quickblox'),
+              id: 0,
               firstName: null,
               lastName: null,
               email: null,
@@ -62,14 +64,45 @@ class DoctorSignup extends Component{
             };
           }
 
+          componentWillMount(){
+            var CREDENTIALS = {
+            'appId': "84745",
+            'authKey': 'LdXtzcfrYbBjeAe',
+            'authSecret': 'dBGXnpyZWmqzTWf'
+            };
+    
+            (this.state.QB).init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
+            
+            var params = {login: 'sajal',password: 'quickblox'};  
+          
+            (this.state.QB).createSession(params, function(err, result) {
+            if(result)
+            {
+            console.log("session created");
+            console.log(result);
+            }
+            else
+            {
+            console.log("error thrown");
+            console.error(err);// callback function
+            }
+          });
+          }
+
+
+          first_function = function() { 
+            console.log("Entered first function"); 
+            return new Promise(resolve => { 
+              resolve(this.create_user()); 
+            }); 
+            }; 
+    
+
           testBackend = async () => {
 
-            var place_of_practices = ""
+            var place_of_practices = "";
 
-            if(this.state.hospitalname!="")
-              place_of_practices = this.state.hospitalname
-            else
-              place_of_practices = this.state.privatized  
+            place_of_practices = this.state.privatized;  
 
             var user = {
               email: this.state.email,
@@ -93,11 +126,35 @@ class DoctorSignup extends Component{
               console.log(testJson.status)
 
             if(testJson.status == "Ok"){
+              console.log("Entered testBackend");
+
+              const first_promise= await this.first_function(); 
+              console.log("After awaiting," + 
+              "the promise returned from first function is:"); 
+              console.log(first_promise); 
               alert("Ok");
               this.setState({is_Auth:true});
               }
             else
               alert(((testJson.status[0]).email)[0])    
+          }
+
+
+          create_user = () => {
+            var param = {
+              password: "quickblox",
+              full_name: "quickblox",
+              email: this.state.email
+            };
+            (this.state.QB).users.create(param, function(err, res) {
+              if (err) {
+                console.log("error in creation")
+                console.error(err)
+              } else {
+                console.log(res)
+              }
+            });
+            return "sajal";
           }
         
           handleSubmit = e => {

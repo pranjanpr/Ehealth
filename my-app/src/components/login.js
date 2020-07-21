@@ -84,10 +84,11 @@ class Login extends Component{
               )
               .then(res => res.json())
               .then(res => {
+                  if(res.is_it_patient == 0) 
+                    this.setState({is_patient: false});
                   if(res.status === "Ok") {
                     this.setState({isAuth: true, patient_information: res.details});
-                    if(res.is_it_patient == 0) 
-                    this.setState({is_patient: false});
+                    
                     
                   }
                   

@@ -31,6 +31,9 @@ import { fade } from '@material-ui/core/styles';
 import Medical from './test/Medical';
 import ChatRequest from './test/Chatrequests';
 import { Redirect } from 'react-router-dom';
+import {useEffectOnce} from 'react-use';
+import {Modal} from 'react-bootstrap';
+import Video_Audio_window from '../Video_Audio_call_for_Doctor'
 
 function Copyright() {
   return (
@@ -172,11 +175,102 @@ export default function DoctorDashboard({doctorinfo = ""}) {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const [QB, setQB] = React.useState(require('../../node_modules/quickblox/quickblox'));
+  const [array_of_details, set_array_of_details] = React.useState([]);
+  const [patient_id, set_patient_id] = React.useState(0);
+  const [specialist_id, set_specialist_id] = React.useState(0);
+  const [is_confirm, set_is_confirm] = React.useState(false);
+  const [is_user_calling, set_is_user_calling] = React.useState(false);  
+
+  useEffectOnce(() => {
+    var CREDENTIALS = {
+    'appId': "84745",
+    'authKey': 'LdXtzcfrYbBjeAe',
+    'authSecret': 'dBGXnpyZWmqzTWf'
+    };
+
+    QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
+    sessioncreater();
+}, [QB]);  
+
+
+const sessioncreater = () => {
+  var params = {login: 'sajal',password: 'quickblox'};  
+  QB.createSession(params, function(err, result) {
+  if(result)
+  {
+  console.log("session created");
+  console.log(result);
+  }
+  else
+  {
+  console.log("error thrown");
+  console.error(err);// callback function
+  }
+});
+}
+
+const get_users = async(email, is_who) => {
+  var searchParams = {email: email};
+  QB.users.get(searchParams, function(error, user){
+    if(user){
+      console.log("users found");
+      console.log(user);
+      if(is_who)
+      set_patient_id(user.id);
+      else
+      set_specialist_id(user.id);
+      return user;
+    }
+    else{
+      console.log("error in finding users");
+      console.error(error);
+    }
+});
+  return "sajal";
+}  
+
+
+const handle_User_Calling = async(date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call) => {
+  console.log(date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call);
+  set_array_of_details([date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call]);
+  console.log(array_of_details);
+  console.log(get_users(specialist_email_id, 0));
+  console.log(get_users(patient_email_id, 1));
+  console.log(patient_id);
+  console.log(specialist_id);
+  set_is_confirm(true);
+
+}
+
+const handleCloseConfirmAndAccept = () => {
+  set_is_confirm(false);
+  set_is_user_calling(true);
+}
+
+const handleCloseConfirm = () => {
+  set_is_confirm(false);
+  set_is_user_calling(false);
+  sessioncreater();
+}
+
+
 
   if(doctorinfo != "")
   {
   return (
-    <div className={classes.root}>
+    <div>
+      {is_user_calling ?
+      <Modal show={is_user_calling}>
+        <Modal.Header closeButton>
+          <Modal.Title>Communication with Doctor</Modal.Title>
+        </Modal.Header>
+        <Modal.Body><Video_Audio_window detail_array = {array_of_details} QB = {QB} patient_id = {patient_id} specialist_id = {specialist_id} endcallfunc = {handleCloseConfirm}/></Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+      </Modal>
+:
+<div className={classes.root}>
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
@@ -234,7 +328,7 @@ export default function DoctorDashboard({doctorinfo = ""}) {
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
-              <ChatRequest/>
+              <ChatRequest/><div></div>
             </div>
             
               </Paper>
@@ -248,7 +342,7 @@ export default function DoctorDashboard({doctorinfo = ""}) {
             {/* Recent Orders */}
             <Grid item xs={12} md={6} lg={5}>
               <Paper className={fixedHeightPaper}>
-                <Appointments />
+              <Appointments info_of_patient = {doctorinfo} is_patient = {0} handle_User_Calling = {handle_User_Calling}/>
               </Paper>
             </Grid>
             <Grid item xs={12} md={4} lg={3}>
@@ -262,7 +356,23 @@ export default function DoctorDashboard({doctorinfo = ""}) {
           </Box>
         </Container>
       </main>
+      <Modal show={is_confirm} onHide={handleCloseConfirm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Kindly confirm if you are ready to accept the call from the patient</Modal.Body>
+        <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseConfirmAndAccept}>
+            Confirm
+          </Button>
+          <Button variant="secondary" onClick={handleCloseConfirm}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
+  }
+      </div>  
   );
       }
 
