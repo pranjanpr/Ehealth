@@ -11,6 +11,7 @@ import {useEffectOnce} from 'react-use'
 import axios from 'axios'; 
 import { Document, Page, pdfjs } from "react-pdf";
 import Carousel from 'react-images';
+import {Modal} from 'react-bootstrap';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
@@ -142,6 +143,14 @@ export default function Medical({info_of_patient}) {
     setnumpages(numPages);
   }
 
+  const hidemodalpdf = () => {
+    setFileShower(0);
+  }
+
+  const hidemodalimg = () => {
+    setImageShower(0);
+  }
+
 
 
 
@@ -193,6 +202,11 @@ export default function Medical({info_of_patient}) {
       )}
       {shower &&
       <div>
+      <Modal show={shower} onHide = {hidemodalpdf}>
+      <Modal.Header closeButton onClick = {hidemodalpdf}>
+      <Modal.Title>File View</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
       <div onClick={nextPage}>
       
                   <Document file={filess} onLoadSuccess={onDocumentLoadSuccess} noData={<h4>Please select a file</h4>}>
@@ -201,10 +215,19 @@ export default function Medical({info_of_patient}) {
                   
                   {filess ? <p>Page {pageNumber} of {numPages}</p> : null}
       </div>
+      </Modal.Body>
+      </Modal>
       </div>
 }
 {imgshower &&
+  <Modal show={imgshower} onHide = {hidemodalimg}>
+    <Modal.Header closeButton onClick = {hidemodalimg}>
+      <Modal.Title>Image View</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
       <Carousel views={images} />
+    </Modal.Body>  
+  </Modal>
 }
     </React.Fragment>
   );

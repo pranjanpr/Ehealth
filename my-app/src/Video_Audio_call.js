@@ -9,7 +9,7 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
   
     const [fetched, setFetched] = useState(false);
     const [calling, setCalling] = useState("");
-    const [currsession, setCurrSession] = useState();
+    const [currsession, setCurrSession] = useState("");
     
     const dateformatter = () => {
       var date = "";
@@ -68,6 +68,9 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
             else if(currdate > detail_array[0]){
               setCalling("You are late than your alloted time, kindly end the call and take the appointment again");
             }
+        }
+        else{
+          setCalling("Technical glitch, check your internet connection, end the call and retry again");
         }
           console.log(patient_id, specialist_id);
           console.log(detail_array);
@@ -201,7 +204,7 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
     const stopvideochat = () => {
       console.log(session);
       console.log(currsession);
-      if((currsession)!=undefined){
+      if(((currsession)!=undefined)||(currsession!="")){
         currsession.reject({});
         playAudio(0);
       }  

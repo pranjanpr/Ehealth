@@ -4,7 +4,7 @@ import {useEffectOnce} from 'react-use';
 
 export default function Video_Audio_call({detail_array, QB, patient_id, specialist_id, endcallfunc}) {
     const [fetched, setFetched] = useState(false);
-    const [currsession, setCurrSession] = useState();
+    const [currsession, setCurrSession] = useState("");
     const [calling, setCalling] = useState("");
     var session;
 
@@ -67,6 +67,9 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
             }
             
         }
+        else{
+          setCalling("Technical glitch, check your internet connection, end the call and retry again");
+        }
           console.log(patient_id, specialist_id);
           console.log(detail_array);
         }
@@ -91,6 +94,7 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
     //When the opponent calls, this is the callback that gets executed and the session is initialized  
   QB.webrtc.onCallListener = function(currentsession, extension) {
     playAudio(1);  
+    setFetched(true);
 
     console.log("iiiiiiiiiiitttttttts exeeeeeeeeectured");
     console.log(currentsession);
@@ -139,7 +143,7 @@ export default function Video_Audio_call({detail_array, QB, patient_id, speciali
   //Or stop it 
   const stopvideochat = () => {
     var extension = {};
-    if((currsession)!=undefined){
+    if(((currsession)!=undefined)||(currsession!="")){
       currsession.stop(extension);
       playAudio(0);
     }
