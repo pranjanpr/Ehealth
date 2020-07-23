@@ -34,6 +34,7 @@ import { Redirect } from 'react-router-dom';
 import {useEffectOnce} from 'react-use';
 import {Modal} from 'react-bootstrap';
 import Video_Audio_window from '../Video_Audio_call_for_Doctor'
+import Chatbox from './chatbox';
 
 function Copyright() {
   return (
@@ -181,6 +182,7 @@ export default function DoctorDashboard({doctorinfo = ""}) {
   const [specialist_id, set_specialist_id] = React.useState(0);
   const [is_confirm, set_is_confirm] = React.useState(false);
   const [is_user_calling, set_is_user_calling] = React.useState(false);  
+  const [chatter, set_is_chat] = React.useState(false);
 
   useEffectOnce(() => {
     var CREDENTIALS = {
@@ -235,12 +237,16 @@ const handle_User_Calling = async(date, specialist_email_id, patient_email_id, t
   console.log(date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call);
   set_array_of_details([date, specialist_email_id, patient_email_id, time_start, time_end, type_of_call]);
   console.log(array_of_details);
+  if(type_of_call == "Chat"){
+    set_is_chat(true);
+  }
+  else{
   console.log(get_users(specialist_email_id, 0));
   console.log(get_users(patient_email_id, 1));
   console.log(patient_id);
   console.log(specialist_id);
   set_is_confirm(true);
-
+  }
 }
 
 const handleCloseConfirmAndAccept = () => {
@@ -253,6 +259,11 @@ const handleCloseConfirm = () => {
   set_is_user_calling(false);
   sessioncreater();
 }
+
+const handleCloseChat = () => {
+  set_is_chat(false);
+}
+
 
 
 
@@ -366,6 +377,17 @@ const handleCloseConfirm = () => {
             Confirm
           </Button>
           <Button variant="secondary" onClick={handleCloseConfirm}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={chatter} onHide={handleCloseChat}>
+        <Modal.Header closeButton>
+          <Modal.Title>ChatBox</Modal.Title>
+        </Modal.Header>
+        <Modal.Body><Chatbox details = {array_of_details} is_patient = {0}/></Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseChat}>
             Close
           </Button>
         </Modal.Footer>
